@@ -42,6 +42,7 @@ void print_time(struct gps_data_t *gpsdata);
 void print_data(struct gps_data_t *gpsdata);
 //static void test();
 
+
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION:     get_satellites
 --
@@ -217,6 +218,7 @@ void print_data(struct gps_data_t *gpsdata) {
 -- The main print function is then called to see if the values were printed succesfully.  This verifies that as long
 -- as the gps-utils was able to succesfully read data into the gps_data_t struct, it should print succesfully as well.
 ----------------------------------------------------------------------------------------------------------------------*/
+
 /*void test() {
 	struct gps_data_t *gpsdata;
 	
@@ -235,4 +237,5 @@ void print_data(struct gps_data_t *gpsdata) {
 	
 	print_data(gpsdata);
 }*/
+
 
