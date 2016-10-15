@@ -5,7 +5,7 @@
 --	PROGRAM:		searchGPS
 --
 --	FUNCTIONS:
---					void gpsLoop()
+--					void readLoop(struct gps_data_t *gpsdata)
 --                  void sendToPrint()
 --                  void errorCheck()
 --
@@ -22,3 +22,8 @@
 --  and one that sends the data from those sensors to be printed on screen. It is also recommended to have
 --  an error checking function in this file.
 ----------------------------------------------------------------------------------------------------------------------*/
+
+void readLoop(struct gps_data_t *gpsdata) {
+	
+}
+
