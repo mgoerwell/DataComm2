@@ -20,14 +20,11 @@
 --  and then start the stream. It will also perform any clean-up or freeing operations upon application termination.
 ----------------------------------------------------------------------------------------------------------------------*/
 
-
 #include <gps.h>
 #include <stdlib.h>
-#include "gpsutils.h"
+#include "gps-utils.cpp"
+#include "gpsprint.cpp"
 #include "structure.h"
-
-
-static unsigned int flags = WATCH_ENABLE;
 
 static struct fixsource_t source;
 static struct gps_data_t *gpsdata;
@@ -37,21 +34,11 @@ int main() {
 	
 	int stream;
 	stream = gps_open(source.server,source.port,gpsdata);
-	if (stream != 0) {
+	if (stream == -1) {
 		fprintf(stderr,"Stream failed to open\n");
 		return 1;
 	} else {
-		fprintf(stdout,"Stream open\n");
+		fprintf(stderr,"Stream open\n");
 	}
-	if (source.device != NULL) {
-		flags |= WATCH_DEVICE;
-	}
-
-	gps_stream(gpsdata,flags,source.device);
-	
-	readLoop(gpsdata);
-	
-	gps_stream(gpsdata,WATCH_DISABLE,NULL);
-	gps_close(gpsdata);
 	
 }

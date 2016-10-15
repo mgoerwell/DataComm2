@@ -1,23 +1,32 @@
 Method: readLoop(data sream)
 {
-	start local thread (endless while program active)
+	start loop(endless while program active)
 	check if stream has data.
 	if there is data, read it.
 	send the read data to the error check function
-	if the data is invalid,
-		 discard data
-	if data is valid 
+	if an error occured
+		 end program
+	else 
 		call sendToPrint on data
-	return to start, 
-	continue until program terminated (ctrl-d in terminal)
+		return to start, 
+		continue until program terminated (ctrl-d in terminal)
 }
 
-Method: errorChecking(const struct gps_data_t *gpsdata) {
-	
+Method: boolean errorChecking(int readStatus) {
+	check to see if read failed.
+	if it did, determine why.
+		print appropriate error message
+		return false
+	if read was successful
+		return true
 }
 
 Method: sendToPrint(const struct gps_data_t *gpsdata) {
 	create storage for result of print
-	call print from gpsprint.cpp
-	return result of gpsprint call
+	call print from gpsprint.cpp passing in gpsdata
+	check result of print
+	if print failed:
+		error message : Failed to print data
+	if print succeeds:
+	return 0;
 } 
