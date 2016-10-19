@@ -92,15 +92,18 @@ void get_satellites(struct gps_data_t *gpsdata) {
 -- This function will print both the latitude and longitude if it can get a good fix.  If not, it will print N/A
 ----------------------------------------------------------------------------------------------------------------------*/
 void print_lat_long(struct gps_data_t *gpsdata) {
-	if (gpsdata->fix.mode >= MODE_2D && isnan(gpsdata->fix.latitude) == 0) {
-		fprintf(stdout, "Latitude:\t%.2f %c\n", gpsdata->fix.latitude,
+	if (gpsdata->satellites_visible != 0) {
+		if (gpsdata->fix.mode >= MODE_2D && isnan(gpsdata->fix.latitude) == 0) {
+			fprintf(stdout, "Latitude:\t%.2f %c\n", gpsdata->fix.latitude,
 		                                  (gpsdata->fix.latitude > 0) ? 'N' : 'S');
-	}
+		}
 	
-	if (gpsdata->fix.mode >= MODE_2D && isnan(gpsdata->fix.longitude) == 0) {
-		fprintf(stdout, "Longitude:\t%.2f %c\n\n", gpsdata->fix.longitude,
+		if (gpsdata->fix.mode >= MODE_2D && isnan(gpsdata->fix.longitude) == 0) {
+			fprintf(stdout, "Longitude:\t%.2f %c\n\n", gpsdata->fix.longitude,
 		                                  (gpsdata->fix.longitude > 0) ? 'E' : 'W');
-	} else
+		} else
+			fprintf(stderr, "LAT/LONG:\tN/A\n");
+	}  else
 		fprintf(stderr, "LAT/LONG:\tN/A\n");
 }
 
@@ -137,8 +140,9 @@ void print_sat_parameters(struct gps_data_t *gpsdata) {
 						(usedflags[i]) ? 'Y' : 'N');
 			}
 		}
-	} else
+	} else{
 		fprintf(stderr, "\nNo satellites visible\n");
+	}
 }
 
 /*------------------------------------------------------------------------------------------------------------------
@@ -163,10 +167,22 @@ void print_sat_parameters(struct gps_data_t *gpsdata) {
 -- to the console.
 ----------------------------------------------------------------------------------------------------------------------*/
 void print_time(struct gps_data_t *gpsdata) {
+	struct tm *utc;
 	time_t gpstime;
 	gpstime = (time_t) gpsdata->fix.time;
+	utc = gmtime(&gpstime);
 	
-	fprintf(stdout, "Time:\t\t%s", ctime(&gpstime));
+	if (gpsdata->satellites_visible != 0) 
+		fprintf(stdout, "Time:\t\t%02d-%02d-%02d %02d:%02d:%02d\n", utc->tm_year + 1900,
+                        utc->tm_mon + 1, utc->tm_mday, utc->tm_hour, utc->tm_min,
+                        utc->tm_sec);
+	//else {
+		//time(&gpstime);
+		//utc = gmtime(&gpstime);
+	//	fprintf(stdout, "Time:\t\t%d-%d-%d %d:%d:%d\n", utc->tm_year + 1900,
+          //              utc->tm_mon + 1, utc->tm_mday, utc->tm_hour, utc->tm_min,
+            //            utc->tm_sec);
+	//}
 }
 
 
@@ -216,7 +232,6 @@ void print_data(struct gps_data_t *gpsdata) {
 -- This function is used for testing purposes.  A gps_data_t struct is created and values are hard-coded into it.
 -- The main print function is then called to see if the values were printed succesfully.  This verifies that as long
 -- as the gps-utils was able to succesfully read data into the gps_data_t struct, it should print succesfully as well.
--- It is commented out and disabled in the release version.
 ----------------------------------------------------------------------------------------------------------------------*/
 
 /*void test() {
